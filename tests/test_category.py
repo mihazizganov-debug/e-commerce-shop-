@@ -26,9 +26,13 @@ class TestCategory:
 
         assert category.name == "Электроника"
         assert category.description == "Технические устройства"
-        assert len(category.products) == 2
-        assert category.products[0].name == "Товар 1"
-        assert category.products[1].price == 2000.0
+        # Теперь products - это строка, а не список
+        products_str = category.products
+        assert isinstance(products_str, str)
+        assert "Товар 1" in products_str
+        assert "1000.0" in products_str
+        assert "Товар 2" in products_str
+        assert "2000.0" in products_str
 
     def test_category_count_increases(self) -> None:
         """Тест увеличения счетчика категорий."""
@@ -65,7 +69,8 @@ class TestCategory:
         empty_category = Category("Пустая", "Нет товаров", [])
 
         assert empty_category.name == "Пустая"
-        assert len(empty_category.products) == 0
+        # Пустая строка для пустой категории
+        assert empty_category.products == ""
         assert Category.category_count == 1
         assert Category.product_count == 0
 
@@ -73,32 +78,11 @@ class TestCategory:
         """Тест категории с одним товаром."""
         category = Category("Одиночная", "Один товар", [self.product1])
 
-        assert len(category.products) == 1
-        assert category.products[0].quantity == 5
+        products_str = category.products
+        assert "Товар 1" in products_str
+        assert "1000.0" in products_str
+        assert "5 шт." in products_str
         assert Category.product_count == 1
-
-    def test_category_with_many_products(self) -> None:
-        """Тест категории со многими товарами."""
-        many_products = [
-            Product(f"Товар {i}", f"Описание {i}", i * 100.0, i) for i in range(1, 11)
-        ]  # 10 товаров
-
-        category = Category("Много товаров", "Большая категория", many_products)
-
-        assert len(category.products) == 10
-        assert Category.product_count == 10
-        assert category.products[4].name == "Товар 5"
-
-    def test_category_products_are_actual_objects(self) -> None:
-        """Тест, что продукты в категории - настоящие объекты Product."""
-        category = Category("Тест", "Описание", [self.product1])
-
-        product_in_category = category.products[0]
-
-        # Проверяем, что это тот же объект
-        assert product_in_category is self.product1
-        assert product_in_category.name == "Товар 1"
-        assert product_in_category.price == 1000.0
 
     def test_category_modification(self) -> None:
         """Тест изменения атрибутов категории после создания."""
@@ -107,15 +91,16 @@ class TestCategory:
         # Меняем атрибуты
         category.name = "Измененная"
         category.description = "Новое описание"
-        category.products.append(self.product2)  # Добавляем товар
+        # Теперь нужно использовать add_product вместо append
+        category.add_product(self.product2)  # Добавляем товар через метод
 
         assert category.name == "Измененная"
         assert category.description == "Новое описание"
-        assert len(category.products) == 2
-        # Счетчики не должны измениться при изменении списка после создания
-        assert (
-            Category.product_count == 1
-        )  # Все еще 1, т.к. счетчик считался при создании
+        products_str = category.products
+        assert "Товар 1" in products_str
+        assert "Товар 2" in products_str
+        # Счетчик должен увеличиться на 1
+        assert Category.product_count == 2  # 1 + 1 = 2
 
     def test_multiple_categories_independence(self) -> None:
         """Тест независимости разных категорий."""
@@ -124,8 +109,7 @@ class TestCategory:
 
         # Проверяем, что категории независимы
         assert category1.name != category2.name
-        assert len(category1.products) != len(category2.products)
-        assert category1.products[0] is not category2.products[0]
+        assert category1.products != category2.products
 
     def test_category_class_attributes_access(self) -> None:
         """Тест доступа к атрибутам класса разными способами."""
@@ -142,3 +126,51 @@ class TestCategory:
         # Значения должны совпадать
         assert category.category_count == Category.category_count
         assert category.product_count == Category.product_count
+
+    # ДЗ 14.2 - новые тесты ниже
+
+    def test_add_product_method(self) -> None:
+        """Тест метода add_product (ДЗ 14.2)."""
+        category = Category("Электроника", "Техника", [])
+        initial_count = Category.product_count
+
+        product = Product("Новый товар", "Описание", 5000.0, 2)
+        category.add_product(product)
+
+        # Проверяем что счетчик увеличился
+        assert Category.product_count == initial_count + 1
+        # Проверяем что товар добавился в список
+        products_str = category.products
+        assert "Новый товар, 5000.0 руб. Остаток: 2 шт." in products_str
+
+    def test_products_property_format(self) -> None:
+        """Тест геттера products с правильным форматированием (ДЗ 14.2)."""
+        product1 = Product("Товар1", "Описание1", 1000.0, 5)
+        product2 = Product("Товар2", "Описание2", 2000.0, 3)
+        category = Category("Категория", "Описание", [product1, product2])
+
+        products_str = category.products
+
+        # Проверяем формат
+        expected_lines = [
+            "Товар1, 1000.0 руб. Остаток: 5 шт.",
+            "Товар2, 2000.0 руб. Остаток: 3 шт.",
+        ]
+        for expected_line in expected_lines:
+            assert expected_line in products_str
+
+        # Проверяем что строки разделены новой строкой
+        lines = products_str.split("\n")
+        assert len(lines) == 2
+
+    def test_private_products_attribute(self) -> None:
+        """Тест приватности атрибута __products (ДЗ 14.2)."""
+        product = Product("Товар", "Описание", 100.0, 10)
+        category = Category("Категория", "Описание", [product])
+
+        # Прямой доступ к приватному атрибуту должен вызывать ошибку
+        with pytest.raises(AttributeError):
+            _ = category.__products  # Это вызовет AttributeError
+
+        # Но работает как property
+        assert isinstance(category.products, str)

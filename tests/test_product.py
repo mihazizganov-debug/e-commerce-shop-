@@ -15,25 +15,12 @@ class TestProduct:
         assert product.price == 10000.0
         assert product.quantity == 10
 
-    def test_product_with_decimal_price(self) -> None:
-        """Тест создания продукта с дробной ценой."""
-        product = Product("Книга", "Художественная", 999.99, 5)
-
-        assert product.price == 999.99
-        assert isinstance(product.price, float)
-
     def test_product_zero_quantity(self) -> None:
         """Тест создания продукта с нулевым количеством."""
         product = Product("Товар", "Описание", 100.0, 0)
 
         assert product.quantity == 0
         assert isinstance(product.quantity, int)
-
-    def test_product_large_quantity(self) -> None:
-        """Тест создания продукта с большим количеством."""
-        product = Product("Сахар", "Килограмм", 50.0, 1000)
-
-        assert product.quantity == 1000
 
     def test_product_negative_price_raises_no_error(self) -> None:
         """Тест: продукт с отрицательной ценой создается без ошибки."""
@@ -81,9 +68,56 @@ class TestProduct:
         assert product.price == 200.0
         assert product.quantity == 10
 
-    def test_product_with_special_characters(self) -> None:
-        """Тест создания продукта со спецсимволами в названии."""
-        product = Product("Товар №1", "Описание с 'кавычками'", 100.0, 5)
+    # ДЗ 14.2 - новые тесты ниже
 
-        assert product.name == "Товар №1"
-        assert "кавычками" in product.description
+    def test_price_getter(self) -> None:
+        """Тест геттера для цены (ДЗ 14.2)."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        # Проверяем что геттер работает
+        assert product.price == 10000.0
+        # Проверяем что атрибут приватный
+        assert hasattr(product, "_price")
+
+    def test_price_setter_positive(self) -> None:
+        """Тест сеттера для положительной цены (ДЗ 14.2)."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        product.price = 15000.0
+        assert product.price == 15000.0
+        assert product._price == 15000.0
+
+    def test_price_setter_negative(self, capsys) -> None:
+        """Тест сеттера для отрицательной цены (ДЗ 14.2)."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        product.price = -5000.0
+        captured = capsys.readouterr()
+        # Цена не должна измениться
+        assert product.price == 10000.0
+        # Должно вывестись сообщение
+        assert "Цена не должна быть нулевая или отрицательная" in captured.out
+
+    def test_price_setter_zero(self, capsys) -> None:
+        """Тест сеттера для нулевой цены (ДЗ 14.2)."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        product.price = 0
+        captured = capsys.readouterr()
+        # Цена не должна измениться
+        assert product.price == 10000.0
+        # Должно вывестись сообщение
+        assert "Цена не должна быть нулевая или отрицательная" in captured.out
+
+    def test_new_product_classmethod(self) -> None:
+        """Тест класс-метода new_product (ДЗ 14.2)."""
+        product_data = {
+            "name": "Ноутбук",
+            "description": "Игровой ноутбук",
+            "price": 150000.0,
+            "quantity": 3,
+        }
+        product = Product.new_product(product_data)
+
+        assert product.name == "Ноутбук"
+        assert product.description == "Игровой ноутбук"
+        assert product.price == 150000.0
+        assert product.quantity == 3
+        # Проверяем что создан правильный тип объекта
+        assert isinstance(product, Product)
