@@ -121,3 +121,33 @@ class TestProduct:
         assert product.quantity == 3
         # Проверяем что создан правильный тип объекта
         assert isinstance(product, Product)
+
+    # ДЗ 15.1 - новые тесты ниже
+
+    def test_product_str_method(self) -> None:
+        """Тест метода __str__ для Product."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        expected = "Телефон, 10000.0 руб. Остаток: 10 шт."
+        assert str(product) == expected
+
+    def test_product_add_method(self) -> None:
+        """Тест метода __add__ для Product."""
+        product1 = Product("Товар1", "Описание1", 100.0, 5)
+        product2 = Product("Товар2", "Описание2", 200.0, 3)
+
+        result = product1 + product2
+        assert result == 1100.0
+
+        # Проверяем что складываются правильно в обе стороны
+        result2 = product2 + product1
+        assert result2 == 1100.0
+
+    def test_product_add_with_wrong_type(self) -> None:
+        """Тест, что нельзя сложить Product с не-Product."""
+        product = Product("Товар", "Описание", 100.0, 5)
+
+        with pytest.raises(TypeError, match="Можно складывать только объекты Product"):
+            _ = product + 100  # type: ignore
+
+        with pytest.raises(TypeError):
+            _ = product + "строка"  # type: ignore

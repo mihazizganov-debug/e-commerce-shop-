@@ -174,3 +174,28 @@ class TestCategory:
 
         # Но работает как property
         assert isinstance(category.products, str)
+
+    # ДЗ 15.1 - новые тесты ниже
+
+    def test_category_str_method(self) -> None:
+        """Тест метода __str__ для Category."""
+        product1 = Product("Товар1", "Описание1", 100.0, 5)
+        product2 = Product("Товар2", "Описание2", 200.0, 3)
+        category = Category("Категория", "Описание", [product1, product2])
+
+        # 5 + 3 = 8 продуктов
+        assert str(category) == "Категория, количество продуктов: 8 шт."
+
+    def test_category_str_empty(self) -> None:
+        """Тест метода __str__ для пустой категории."""
+        category = Category("Пустая", "Описание", [])
+        assert str(category) == "Пустая, количество продуктов: 0 шт."
+
+    def test_products_property_uses_str(self) -> None:
+        """Тест что геттер products использует __str__ продуктов."""
+        product = Product("Телефон", "Смартфон", 10000.0, 10)
+        category = Category("Категория", "Описание", [product])
+
+        products_str = category.products
+        expected = "Телефон, 10000.0 руб. Остаток: 10 шт."
+        assert products_str == expected
