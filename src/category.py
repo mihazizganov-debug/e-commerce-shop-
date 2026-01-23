@@ -22,6 +22,11 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(products)
 
+    def __str__(self) -> str:
+        """Строковое представление категории."""
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
     def add_product(self, product: Product) -> None:
         """Добавление товара в категорию."""
         self.__products.append(product)
@@ -30,9 +35,5 @@ class Category:
     @property
     def products(self) -> str:
         """Геттер для получения строкового представления товаров."""
-        products_info = []
-        for product in self.__products:
-            products_info.append(
-                f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
-            )
-        return "\n".join(products_info)
+        # Оптимизированная версия с использованием __str__ продуктов
+        return "\n".join(str(product) for product in self.__products)
