@@ -19,12 +19,11 @@ class Product:
 
     def __add__(self, other: "Product") -> float:
         """
-        Сложение двух товаров.
-
+        Сложение двух товаров одного типа.
         Возвращает сумму произведений цены на количество для каждого товара.
         """
-        if not isinstance(other, Product):
-            raise TypeError("Можно складывать только объекты Product")
+        if type(self) != type(other):  # noqa: E721
+            raise TypeError("Нельзя складывать продукты разных типов")
 
         return (self.price * self.quantity) + (other.price * other.quantity)
 
