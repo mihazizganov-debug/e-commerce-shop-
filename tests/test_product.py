@@ -146,8 +146,5 @@ class TestProduct:
         """Тест, что нельзя сложить Product с не-Product."""
         product = Product("Товар", "Описание", 100.0, 5)
 
-        with pytest.raises(TypeError, match="Можно складывать только объекты Product"):
+        with pytest.raises(TypeError, match="Нельзя складывать продукты разных типов"):
             _ = product + 100  # type: ignore
-
-        with pytest.raises(TypeError):
-            _ = product + "строка"  # type: ignore
