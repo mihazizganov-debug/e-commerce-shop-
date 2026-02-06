@@ -29,11 +29,13 @@ class Category:
 
     def add_product(self, product: Product) -> None:
         """Добавление товара в категорию."""
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только продукты и их наследников")
+
         self.__products.append(product)
         Category.product_count += 1
 
     @property
     def products(self) -> str:
         """Геттер для получения строкового представления товаров."""
-        # Оптимизированная версия с использованием __str__ продуктов
         return "\n".join(str(product) for product in self.__products)
