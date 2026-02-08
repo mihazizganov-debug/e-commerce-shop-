@@ -1,4 +1,6 @@
-"""Модуль с классом Smartphone."""
+"""
+Модуль с классом Smartphone.
+"""
 
 from src.product import Product
 
@@ -6,7 +8,7 @@ from src.product import Product
 class Smartphone(Product):
     """
     Класс для представления смартфона.
-    Наследуется от класса Product и добавляет специфичные для смартфона атрибуты.
+    Наследуется от класса Product.
     """
 
     def __init__(
@@ -20,12 +22,16 @@ class Smartphone(Product):
         memory: int,
         color: str,
     ) -> None:
-        """Инициализирует новый экземпляр класса Smartphone."""
-        super().__init__(name, description, price, quantity)
+        """
+        Инициализирует новый экземпляр класса Smartphone.
+        """
+        # Сначала устанавливаем специфичные атрибуты
         self.efficiency = efficiency
         self.model = model
         self.memory = memory
         self.color = color
+        # Затем вызываем родительский __init__
+        super().__init__(name, description, price, quantity)
 
     def __str__(self) -> str:
         """Строковое представление смартфона."""
