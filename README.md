@@ -4,7 +4,7 @@
 
 Проект интернет-магазина на Python.
 
-## 📋 Домашнее задание 16.1
+## 📋 Домашнее задание 17.1
 
 ### ✅ Реализовано:
 
@@ -59,9 +59,16 @@
    - При попытке добавления другого объекта выбрасывается `TypeError`
    - Использована функция `isinstance()` для проверки
 
+#### 9. **Абстрактный класс и миксин (новое в 17.1)**:
+   - Создан абстрактный класс BaseProduct - родитель для Product
+   - Создан миксин LogMixin - логирует создание объектов
+   - Класс Product теперь наследуется от BaseProduct и LogMixin
+   - При создании объекта выводится: 
+   Создан объект класса Product('Название', 'Описание', цена, количество)
+
 #### 9. **Тестирование**:
-   - 42 теста успешно проходят
-   - Покрытие кода тестами: **100%**
+   - 63 теста успешно проходят
+   - Покрытие кода тестами: **92%**
    - Добавлены тесты для новой функциональности
 
 #### 10. **Качество кода**:
@@ -111,14 +118,22 @@ e-commerce-shop-/
 │   ├── product.py            # Класс Product с __str__ и __add__
 │   ├── category.py           # Класс Category с __str__
 │   ├── smartphone.py         # Класс Smartphone (наследник Product)
-│   └── lawngrass.py          # Класс LawnGrass (наследник Product)
+│   ├── lawngrass.py          # Класс LawnGrass (наследник Product)
+│   ├── base_product.py       # Абстрактный класс BaseProduct (новое  17.1)
+│   └── log_mixin.py          # Миксин LogMixin (новое 17.1)
+│ 
 │ 
 ├── tests/
-│   ├── test_product.py       # Тесты для Product
-│   ├── test_category.py      # Тесты для Category
-│   ├── test_smartphone.py    # Тесты для Smartphone
-│   ├── test_lawngrass.py     # Тесты для LawnGrass
-│   └── test_category_enhanced.py # Дополнительные тесты для Category
+│   ├── test_product.py                      # Тесты для Product
+│   ├── test_category.py                     # Тесты для Category
+│   ├── test_smartphone.py                   # Тесты для Smartphone
+│   ├── test_lawngrass.py                    # Тесты для LawnGrass
+│   ├── test_category_enhanced.py            # Дополнительные тесты для Category
+│   ├── test_abstract_product.py             # Тесты для абстрактных классов (новое  17.1)
+│   ├── test_base_product.py                 # Тесты для BaseProduct (новое  17.1)
+│   ├── test_existing_functionality.py       # Тесты существующей функциональности (новое  17.1)
+│   └── test_log_mixin.py                    # Тесты для LogMixin (новое  17.1)
+│
 │ 
 ├── .flake8                   # Конфигурация flake8
 ├── .gitignore                # Игнорируемые файлы
@@ -138,3 +153,5 @@ e-commerce-shop-/
 Как посмотреть: Откройте файл в браузере
 
 Как сгенерировать заново: pytest tests/ --cov=src --cov-report=html
+
+
