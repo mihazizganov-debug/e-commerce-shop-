@@ -75,7 +75,7 @@ class TestSmartphone:
 
     def test_smartphone_addition_different_type(self):
         """Тест сложения смартфона с другим типом продукта."""
-        from src.lawngrass import LawnGrass
+        from src.lawn_grass import LawnGrass
 
         smartphone = Smartphone("Phone", "Desc", 100, 2, 2.0, "M1", 64, "Black")
         grass = LawnGrass("Grass", "Desc", 30, 4, "Russia", "14 дней", "Green")

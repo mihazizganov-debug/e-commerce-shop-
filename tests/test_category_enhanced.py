@@ -3,7 +3,7 @@
 import pytest
 
 from src.category import Category
-from src.lawngrass import LawnGrass
+from src.lawn_grass import LawnGrass
 from src.product import Product
 from src.smartphone import Smartphone
 
