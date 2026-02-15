@@ -39,3 +39,23 @@ class Category:
     def products(self) -> str:
         """Геттер для получения строкового представления товаров."""
         return "\n".join(str(product) for product in self.__products)
+
+    @property
+    def products_list(self) -> List[Product]:
+        """Геттер для получения списка товаров."""
+        return self.__products
+
+    def middle_price(self) -> float:
+        """
+        Подсчитывает средний ценник всех товаров в категории.
+
+        Returns:
+            float: Средняя цена товаров или 0, если в категории нет товаров
+        """
+        try:
+            # Суммируем цены всех товаров и делим на их количество
+            total_sum = sum(product.price for product in self.__products)
+            return total_sum / len(self.__products)
+        except ZeroDivisionError:
+            # Если в категории нет товаров, возвращаем 0
+            return 0.0

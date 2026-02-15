@@ -11,7 +11,22 @@ class Product(LogMixin, BaseProduct):
     """
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
-        # Инициализируем атрибуты
+        """
+        Инициализирует новый экземпляр класса Product.
+
+        Args:
+            name: Название товара
+            description: Описание товара
+            price: Цена товара
+            quantity: Количество товара
+
+        Raises:
+            ValueError: Если количество товара равно 0
+        """
+        # Проверка на нулевое количество
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+
         self.name = name
         self.description = description
         self._price = price
@@ -33,6 +48,18 @@ class Product(LogMixin, BaseProduct):
 
     @classmethod
     def new_product(cls, product_data: Dict[str, Any]) -> "Product":
+        """
+        Создает новый продукт из словаря с данными.
+
+        Args:
+            product_data: Словарь с данными продукта
+
+        Returns:
+            Product: Новый экземпляр продукта
+
+        Raises:
+            ValueError: Если количество товара равно 0
+        """
         return cls(
             name=product_data["name"],
             description=product_data["description"],
