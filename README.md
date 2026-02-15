@@ -121,24 +121,24 @@ e-commerce-shop-/
 ├── main.py                   # Основной файл с демонстрационным кодом
 ├── src/
 │   ├── __init__.py           # Инициализация пакета
-│   ├── product.py            # Класс Product с обработкой quantity=0 (новое)
-│   ├── category.py           # Класс Category с методом middle_price (новое)
+│   ├── product.py            # Класс Product с обработкой quantity=0 (новое  17.2)
+│   ├── category.py           # Класс Category с методом middle_price (новое  17.2)
 │   ├── smartphone.py         # Класс Smartphone (наследник Product)
 │   ├── lawn_grass.py         # Класс LawnGrass (наследник Product)
-│   ├── base_product.py       # Абстрактный класс BaseProduct (новое  17.1)
-│   └── log_mixin.py          # Миксин LogMixin (новое 17.1)
+│   ├── base_product.py       # Абстрактный класс BaseProduct
+│   └── log_mixin.py          # Миксин LogMixin
 │ 
 │ 
 ├── tests/
-│   ├── test_product.py                      # Тесты для Product
-│   ├── test_category.py                     # Тесты для Category
+│   ├── test_product.py                      # Тесты для Product (новое  17.2)
+│   ├── test_category.py                     # Тесты для Category (новое  17.2)
 │   ├── test_smartphone.py                   # Тесты для Smartphone
 │   ├── test_lawngrass.py                    # Тесты для LawnGrass
 │   ├── test_category_enhanced.py            # Дополнительные тесты для Category
-│   ├── test_abstract_product.py             # Тесты для абстрактных классов (новое  17.1)
-│   ├── test_base_product.py                 # Тесты для BaseProduct (новое  17.1)
-│   ├── test_existing_functionality.py       # Тесты существующей функциональности (новое  17.1)
-│   └── test_log_mixin.py                    # Тесты для LogMixin (новое  17.1)
+│   ├── test_abstract_product.py             # Тесты для абстрактных классов
+│   ├── test_base_product.py                 # Тесты для BaseProduct (новое  17.2)
+│   ├── test_existing_functionality.py       # Тесты существующей функциональности
+│   └── test_log_mixin.py                    # Тесты для LogMixin
 │
 │ 
 ├── .flake8                   # Конфигурация flake8
