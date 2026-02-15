@@ -3,6 +3,7 @@ from abc import ABC
 import pytest
 
 from src.base_product import BaseProduct
+
 # Импортируем правильно:
 from src.lawn_grass import LawnGrass
 from src.product import Product

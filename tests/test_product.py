@@ -3,148 +3,94 @@ import pytest
 from src.product import Product
 
 
-class TestProduct:
-    """Тестирование функциональности класса Product."""
+def test_product_creation():
+    """Тест создания продукта с корректными данными."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    assert product.name == "Телефон"
+    assert product.description == "Смартфон"
+    assert product.price == 50000.0
+    assert product.quantity == 10
 
-    def test_product_initialization(self) -> None:
-        """Тест инициализации продукта с обычными значениями."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
 
-        assert product.name == "Телефон"
-        assert product.description == "Смартфон"
-        assert product.price == 10000.0
-        assert product.quantity == 10
+def test_product_creation_with_zero_quantity():
+    """Тест создания продукта с нулевым количеством."""
+    with pytest.raises(
+        ValueError, match="Товар с нулевым количеством не может быть добавлен"
+    ):
+        Product("Бракованный товар", "Неверное количество", 1000.0, 0)
 
-    def test_product_zero_quantity(self) -> None:
-        """Тест создания продукта с нулевым количеством."""
-        product = Product("Товар", "Описание", 100.0, 0)
 
-        assert product.quantity == 0
-        assert isinstance(product.quantity, int)
+def test_new_product_with_zero_quantity():
+    """Тест создания продукта через метод new_product с нулевым количеством."""
+    product_data = {
+        "name": "Бракованный товар",
+        "description": "Неверное количество",
+        "price": 1000.0,
+        "quantity": 0,
+    }
 
-    def test_product_negative_price_raises_no_error(self) -> None:
-        """Тест: продукт с отрицательной ценой создается без ошибки."""
-        product = Product("Товар", "Описание", -100.0, 5)
+    with pytest.raises(
+        ValueError, match="Товар с нулевым количеством не может быть добавлен"
+    ):
+        Product.new_product(product_data)
 
-        assert product.price == -100.0
 
-    def test_product_attributes_types(self) -> None:
-        """Тест типов данных атрибутов продукта."""
-        product = Product("Ноутбук", "Игровой", 50000.0, 3)
+def test_price_setter_negative(capsys):
+    """Тест установки отрицательной цены."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    product.price = -100
+    captured = capsys.readouterr()
+    assert "Цена не должна быть нулевая или отрицательная" in captured.out
+    assert product.price == 50000.0  # Цена не должна измениться
 
-        assert isinstance(product.name, str)
-        assert isinstance(product.description, str)
-        assert isinstance(product.price, float)
-        assert isinstance(product.quantity, int)
 
-    def test_product_string_representation(self) -> None:
-        """Тест строкового представления объекта Product."""
-        product = Product("Тест", "Описание", 100.0, 5)
+def test_price_setter_zero(capsys):
+    """Тест установки нулевой цены."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    product.price = 0
+    captured = capsys.readouterr()
+    assert "Цена не должна быть нулевая или отрицательная" in captured.out
+    assert product.price == 50000.0  # Цена не должна измениться
 
-        # Проверяем, что объект имеет строковое представление
-        repr_str = repr(product)
-        assert "Product" in repr_str
-        assert "Тест" in repr_str or "object at" in repr_str
 
-    def test_product_equality_by_reference(self) -> None:
-        """Тест сравнения продуктов по ссылке."""
-        product1 = Product("Товар", "Описание", 100.0, 5)
-        product2 = Product("Товар", "Описание", 100.0, 5)
-        product3 = product1  # Та же ссылка
+def test_price_setter_positive():
+    """Тест установки положительной цены."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    product.price = 45000.0
+    assert product.price == 45000.0
 
-        assert product1 is not product2  # Разные объекты
-        assert product1 is product3  # Один и тот же объект
 
-    def test_product_modify_attributes(self) -> None:
-        """Тест изменения атрибутов продукта после создания."""
-        product = Product("Исходный", "Описание", 100.0, 5)
+def test_product_str():
+    """Тест строкового представления продукта."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    assert str(product) == "Телефон, 50000.0 руб. Остаток: 10 шт."
 
-        # Меняем атрибуты
-        product.name = "Измененный"
-        product.price = 200.0
-        product.quantity = 10
 
-        assert product.name == "Измененный"
-        assert product.price == 200.0
-        assert product.quantity == 10
+def test_product_repr():
+    """Тест repr представления продукта."""
+    product = Product("Телефон", "Смартфон", 50000.0, 10)
+    expected = "Product('Телефон', 'Смартфон', 50000.0, 10)"
+    assert repr(product) == expected
 
-    # ДЗ 14.2 - новые тесты ниже
 
-    def test_price_getter(self) -> None:
-        """Тест геттера для цены (ДЗ 14.2)."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
-        # Проверяем что геттер работает
-        assert product.price == 10000.0
-        # Проверяем что атрибут приватный
-        assert hasattr(product, "_price")
+def test_product_addition():
+    """Тест сложения продуктов."""
+    product1 = Product("Товар 1", "Описание 1", 100.0, 5)
+    product2 = Product("Товар 2", "Описание 2", 200.0, 3)
 
-    def test_price_setter_positive(self) -> None:
-        """Тест сеттера для положительной цены (ДЗ 14.2)."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
-        product.price = 15000.0
-        assert product.price == 15000.0
-        assert product._price == 15000.0
+    result = product1 + product2
+    expected = (100.0 * 5) + (200.0 * 3)  # 500 + 600 = 1100
+    assert result == expected
 
-    def test_price_setter_negative(self, capsys) -> None:
-        """Тест сеттера для отрицательной цены (ДЗ 14.2)."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
-        product.price = -5000.0
-        captured = capsys.readouterr()
-        # Цена не должна измениться
-        assert product.price == 10000.0
-        # Должно вывестись сообщение
-        assert "Цена не должна быть нулевая или отрицательная" in captured.out
 
-    def test_price_setter_zero(self, capsys) -> None:
-        """Тест сеттера для нулевой цены (ДЗ 14.2)."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
-        product.price = 0
-        captured = capsys.readouterr()
-        # Цена не должна измениться
-        assert product.price == 10000.0
-        # Должно вывестись сообщение
-        assert "Цена не должна быть нулевая или отрицательная" in captured.out
+def test_product_addition_different_types():
+    """Тест сложения продуктов разных типов."""
 
-    def test_new_product_classmethod(self) -> None:
-        """Тест класс-метода new_product (ДЗ 14.2)."""
-        product_data = {
-            "name": "Ноутбук",
-            "description": "Игровой ноутбук",
-            "price": 150000.0,
-            "quantity": 3,
-        }
-        product = Product.new_product(product_data)
+    class Smartphone(Product):
+        pass
 
-        assert product.name == "Ноутбук"
-        assert product.description == "Игровой ноутбук"
-        assert product.price == 150000.0
-        assert product.quantity == 3
-        # Проверяем что создан правильный тип объекта
-        assert isinstance(product, Product)
+    product1 = Product("Товар 1", "Описание 1", 100.0, 5)
+    product2 = Smartphone("Товар 2", "Описание 2", 200.0, 3)
 
-    # ДЗ 15.1 - новые тесты ниже
-
-    def test_product_str_method(self) -> None:
-        """Тест метода __str__ для Product."""
-        product = Product("Телефон", "Смартфон", 10000.0, 10)
-        expected = "Телефон, 10000.0 руб. Остаток: 10 шт."
-        assert str(product) == expected
-
-    def test_product_add_method(self) -> None:
-        """Тест метода __add__ для Product."""
-        product1 = Product("Товар1", "Описание1", 100.0, 5)
-        product2 = Product("Товар2", "Описание2", 200.0, 3)
-
-        result = product1 + product2
-        assert result == 1100.0
-
-        # Проверяем что складываются правильно в обе стороны
-        result2 = product2 + product1
-        assert result2 == 1100.0
-
-    def test_product_add_with_wrong_type(self) -> None:
-        """Тест, что нельзя сложить Product с не-Product."""
-        product = Product("Товар", "Описание", 100.0, 5)
-
-        with pytest.raises(TypeError, match="Нельзя складывать продукты разных типов"):
-            _ = product + 100  # type: ignore
+    with pytest.raises(TypeError, match="Нельзя складывать продукты разных типов"):
+        product1 + product2
